@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Campus Connect - Overdue Books</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f6f9;
+            margin: 0;
+        }
+
+        .header {
+            background: #1e3a8a;
+            color: white;
+            padding: 20px 30px;
+        }
+
+        .container {
+            padding: 30px;
+        }
+
+        .card {
+            background: white;
+            padding: 25px;
+            margin-bottom: 15px;
+            border-radius: 10px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+        }
+
+        .btn {
+            display: inline-block;
+            margin-top: 15px;
+            padding: 10px 18px;
+            background: #1e3a8a;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+        }
+
+        .danger {
+            color: #dc2626;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="header">
+    <h1>📚 Campus Connect - Overdue Books</h1>
+</div>
+
+<div class="container">
+
+    <h2>Overdue Books</h2>
+
+    <!-- No overdue books -->
+    <div th:if="${#lists.isEmpty(overdueBooks)}">
+        <div class="card">
+            <p>✅ No overdue books.</p>
+        </div>
+    </div>
+
+    <!-- Overdue books -->
+    <div th:each="issued : ${overdueBooks}" class="card">
+
+        <h3 th:text="${issued.book.title}">
+            Book Title
+        </h3>
+
+        <p>
+            <strong>Student:</strong>
+            <span th:text="${issued.studentName}">
+                Student Name
+            </span>
+        </p>
+
+        <p>
+            <strong>Issue Date:</strong>
+            <span th:text="${issued.issueDate}">
+                2026-01-01
+            </span>
+        </p>
+
+        <p>
+            <strong>Due Date:</strong>
+            <span th:text="${issued.dueDate}">
+                2026-01-15
+            </span>
+        </p>
+
+        <p class="danger">
+            ⚠️ This book is overdue.
+        </p>
+
+    </div>
+
+    <a href="/library" class="btn">
+        ← Back to Library
+    </a>
+
+</div>
+
+</body>
+</html>

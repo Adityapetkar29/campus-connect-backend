@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Library Login - Campus Connect</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #f4f6f9;
+        }
+
+        .login-box {
+            width: 380px;
+            background: white;
+            padding: 35px;
+            border-radius: 12px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.12);
+        }
+
+        h1 {
+            text-align: center;
+            color: #1e3a8a;
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            margin-top: 15px;
+            margin-bottom: 6px;
+            font-weight: bold;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 15px;
+        }
+
+        button {
+            width: 100%;
+            margin-top: 25px;
+            padding: 13px;
+            border: none;
+            border-radius: 6px;
+            background: #1e3a8a;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #162d6b;
+        }
+
+        .note {
+            text-align: center;
+            margin-top: 18px;
+            color: #777;
+            font-size: 13px;
+        }
+
+        #message {
+            text-align: center;
+            margin-top: 15px;
+            color: red;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="login-box">
+
+    <h1>📚 Library</h1>
+
+    <div class="subtitle">
+        Campus Connect Library Management
+    </div>
+
+    <form id="loginForm">
+
+        <label>Username</label>
+        <input type="text"
+               id="username"
+               placeholder="Enter username"
+               required>
+
+        <label>Password</label>
+        <input type="password"
+               id="password"
+               placeholder="Enter password"
+               required>
+
+        <button type="submit">
+            Login
+        </button>
+
+    </form>
+
+    <div id="message"></div>
+
+    <div class="note">
+        Library access
+    </div>
+
+</div>
+
+<script>
+    document.getElementById("loginForm").addEventListener("submit", async function(event) {
+
+        event.preventDefault();
+
+        const username = document.getElementById("username").value;
+        const password = document.getElementById("password").value;
+
+        try {
+
+            const response = await fetch("/api/auth/login", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    username: username,
+                    password: password
+                })
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                document.getElementById("message").textContent =
+                    data.message || "Login failed";
+                return;
+            }
+
+            if (data.role !== "LIBRARIAN") {
+                document.getElementById("message").textContent =
+                    "Only librarian can access this page.";
+                return;
+            }
+
+            localStorage.setItem("token", data.token);
+            localStorage.setItem("username", data.username);
+            localStorage.setItem("role", data.role);
+
+            window.location.href = "/library/dashboard";
+
+        } catch (error) {
+
+            document.getElementById("message").textContent =
+                "Server error. Please try again.";
+
+            console.error(error);
+        }
+    });
+</script>
+
+</body>
+</html>

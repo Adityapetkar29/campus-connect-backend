@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Campus Connect - Issue Book</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f6f9;
+            margin: 0;
+        }
+
+        .header {
+            background: #1e3a8a;
+            color: white;
+            padding: 20px 30px;
+        }
+
+        .container {
+            padding: 30px;
+        }
+
+        .card {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            max-width: 500px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+        }
+
+        label {
+            display: block;
+            margin-top: 15px;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+        }
+
+        button {
+            margin-top: 20px;
+            padding: 12px 20px;
+            background: #1e3a8a;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .btn {
+            display: inline-block;
+            margin-top: 15px;
+            padding: 12px 20px;
+            background: #555;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+        }
+
+        .error {
+            color: #dc2626;
+            margin-top: 15px;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="header">
+    <h1>📚 Campus Connect - Issue Book</h1>
+</div>
+
+<div class="container">
+
+    <div class="card">
+
+        <h2>Issue Book</h2>
+
+        <form action="/library/books/issue" method="post">
+
+            <label>Student Name</label>
+
+            <input
+                    type="text"
+                    name="studentName"
+                    placeholder="Enter student name"
+                    required
+            >
+
+            <label>Select Book</label>
+
+            <select name="bookId" required>
+
+                <option value="">-- Select Book --</option>
+
+                <option
+                        th:each="book : ${books}"
+                        th:value="${book.bookId}"
+                        th:text="${book.title + ' (' + book.availableCopies + ' available)'}"
+                        th:disabled="${book.availableCopies == 0}">
+                </option>
+
+            </select>
+
+            <div
+                    class="error"
+                    th:if="${param.error}"
+            >
+                Book is not available.
+            </div>
+
+            <button type="submit">
+                📖 Issue Book
+            </button>
+
+        </form>
+
+        <br>
+
+        <a href="/library" class="btn">
+            ← Back to Library
+        </a>
+
+    </div>
+
+</div>
+
+</body>
+</html>

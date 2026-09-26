@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Campus Connect - Admin Dashboard</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: "Segoe UI", Arial, sans-serif;
+            background: #f1f5f9;
+            color: #1e293b;
+        }
+
+        /* Header */
+
+        .header {
+            background: linear-gradient(135deg, #111827, #1e3a8a);
+            color: white;
+            padding: 28px 40px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+        }
+
+        .header-content {
+            max-width: 1150px;
+            margin: auto;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 28px;
+        }
+
+        .header p {
+            margin: 7px 0 0;
+            opacity: 0.85;
+        }
+
+        /* Container */
+
+        .container {
+            max-width: 1150px;
+            margin: 35px auto;
+            padding: 0 20px;
+        }
+
+        .welcome {
+            margin-bottom: 25px;
+        }
+
+        .welcome h2 {
+            margin: 0;
+            font-size: 27px;
+        }
+
+        .welcome p {
+            color: #64748b;
+            margin-top: 6px;
+        }
+
+        /* Stats */
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 18px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 22px;
+            border-radius: 14px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+        }
+
+        .stat-icon {
+            font-size: 28px;
+            margin-bottom: 12px;
+        }
+
+        .stat-card h3 {
+            margin: 0;
+            font-size: 28px;
+            color: #1e3a8a;
+        }
+
+        .stat-card p {
+            margin: 5px 0 0;
+            color: #64748b;
+            font-size: 14px;
+        }
+
+        /* Section Title */
+
+        .section-title {
+            font-size: 21px;
+            margin: 30px 0 15px;
+        }
+
+        /* Quick Actions */
+
+        .actions {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 18px;
+        }
+
+        .action-card {
+            background: white;
+            padding: 22px;
+            border-radius: 14px;
+            border: 1px solid #e2e8f0;
+            text-decoration: none;
+            color: #1e293b;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+            transition: 0.2s;
+        }
+
+        .action-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .action-icon {
+            font-size: 30px;
+            margin-bottom: 10px;
+        }
+
+        .action-card h3 {
+            margin: 0 0 5px;
+            color: #1e3a8a;
+        }
+
+        .action-card p {
+            margin: 0;
+            color: #64748b;
+            font-size: 14px;
+        }
+
+        /* Recent Users */
+
+        .recent-box {
+            background: white;
+            border-radius: 14px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+            overflow-x: auto;
+        }
+
+        .recent-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .recent-table th {
+            background: #f8fafc;
+            color: #475569;
+            font-size: 12px;
+            text-transform: uppercase;
+            text-align: left;
+            padding: 15px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .recent-table td {
+            padding: 15px;
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 14px;
+        }
+
+        .recent-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .recent-table tr:hover {
+            background: #f8fafc;
+        }
+
+        .recent-username {
+            font-weight: 700;
+            color: #1e3a8a;
+        }
+
+        .recent-email {
+            color: #64748b;
+        }
+
+        /* Role Badge */
+
+        .role-badge {
+            display: inline-block;
+            padding: 5px 9px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        .role-student {
+            background: #dbeafe;
+            color: #1d4ed8;
+        }
+
+        .role-faculty {
+            background: #ede9fe;
+            color: #6d28d9;
+        }
+
+        .role-librarian {
+            background: #dcfce7;
+            color: #15803d;
+        }
+
+        .role-admin {
+            background: #fee2e2;
+            color: #b91c1c;
+        }
+
+        /* Account Badge */
+
+        .account-badge {
+            display: inline-block;
+            padding: 5px 9px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        .account-active {
+            background: #dcfce7;
+            color: #15803d;
+        }
+
+        .account-inactive {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+
+        /* View All */
+
+        .view-all {
+            display: inline-block;
+            margin-top: 15px;
+            padding: 10px 16px;
+            background: #1e3a8a;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .view-all:hover {
+            background: #2563eb;
+        }
+
+        /* Empty Recent Users */
+
+        .recent-empty {
+            text-align: center;
+            padding: 35px 20px;
+            color: #64748b;
+        }
+
+        /* Logout */
+
+        .bottom {
+            margin-top: 30px;
+        }
+
+        .logout {
+            display: inline-block;
+            padding: 11px 20px;
+            background: #dc2626;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+        }
+
+        .logout:hover {
+            background: #b91c1c;
+        }
+
+        /* Responsive */
+
+        @media (max-width: 900px) {
+
+            .stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .actions {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 600px) {
+
+            .header {
+                padding: 22px;
+            }
+
+            .header h1 {
+                font-size: 23px;
+            }
+
+            .container {
+                margin-top: 25px;
+            }
+
+            .stats,
+            .actions {
+                grid-template-columns: 1fr;
+            }
+
+            .recent-table th,
+            .recent-table td {
+                padding: 11px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- Header -->
+
+<div class="header">
+
+    <div class="header-content">
+
+        <h1>🛡️ Campus Connect</h1>
+
+        <p>
+            Admin Panel • Management Dashboard
+        </p>
+
+    </div>
+
+</div>
+
+
+<!-- Main -->
+
+<div class="container">
+
+    <!-- Welcome -->
+
+    <div class="welcome">
+
+        <h2>Admin Dashboard</h2>
+
+        <p>
+            Manage students, faculty, librarians and system approvals.
+        </p>
+
+    </div>
+
+
+    <!-- Statistics -->
+
+    <div class="stats">
+
+        <!-- Students -->
+
+        <div class="stat-card">
+
+            <div class="stat-icon">
+                👨‍🎓
+            </div>
+
+            <h3 th:text="${totalStudents}">
+                0
+            </h3>
+
+            <p>
+                Total Students
+            </p>
+
+        </div>
+
+
+        <!-- Faculty -->
+
+        <div class="stat-card">
+
+            <div class="stat-icon">
+                👨‍🏫
+            </div>
+
+            <h3 th:text="${totalFaculty}">
+                0
+            </h3>
+
+            <p>
+                Total Faculty
+            </p>
+
+        </div>
+
+
+        <!-- Pending -->
+
+        <div class="stat-card">
+
+            <div class="stat-icon">
+                ⏳
+            </div>
+
+            <h3 th:text="${pendingFaculty}">
+                0
+            </h3>
+
+            <p>
+                Pending Faculty
+            </p>
+
+        </div>
+
+
+        <!-- Librarians -->
+
+        <div class="stat-card">
+
+            <div class="stat-icon">
+                📚
+            </div>
+
+            <h3 th:text="${totalLibrarians}">
+                0
+            </h3>
+
+            <p>
+                Total Librarians
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <!-- Quick Actions -->
+
+    <h2 class="section-title">
+        Quick Actions
+    </h2>
+
+    <div class="actions">
+
+        <a href="/admin/faculty"
+           class="action-card">
+
+            <div class="action-icon">
+                👨‍🏫
+            </div>
+
+            <h3>
+                Faculty Approval
+            </h3>
+
+            <p>
+                Approve or reject pending faculty registrations.
+            </p>
+
+        </a>
+
+
+        <a href="/admin/users"
+           class="action-card">
+
+            <div class="action-icon">
+                👥
+            </div>
+
+            <h3>
+                User Management
+            </h3>
+
+            <p>
+                View and manage registered users.
+            </p>
+
+        </a>
+
+
+        <a href="/library"
+           class="action-card">
+
+            <div class="action-icon">
+                📚
+            </div>
+
+            <h3>
+                Library Management
+            </h3>
+
+            <p>
+                Manage books, issues, returns and overdue books.
+            </p>
+
+        </a>
+
+    </div>
+
+
+    <!-- Recent Users -->
+
+    <h2 class="section-title">
+        Recent Users
+    </h2>
+
+    <div class="recent-box">
+
+        <!-- No Users -->
+
+        <div th:if="${#lists.isEmpty(recentUsers)}"
+             class="recent-empty">
+
+            <div style="font-size: 35px;">
+                👥
+            </div>
+
+            <h3>
+                No Recent Users
+            </h3>
+
+            <p>
+                No users have been registered yet.
+            </p>
+
+        </div>
+
+
+        <!-- Users -->
+
+        <table
+                th:if="${!#lists.isEmpty(recentUsers)}"
+                class="recent-table">
+
+            <thead>
+
+            <tr>
+
+                <th>
+                    ID
+                </th>
+
+                <th>
+                    Username
+                </th>
+
+                <th>
+                    Email
+                </th>
+
+                <th>
+                    Role
+                </th>
+
+                <th>
+                    Account
+                </th>
+
+            </tr>
+
+            </thead>
+
+
+            <tbody>
+
+            <tr th:each="user : ${recentUsers}">
+
+                <td th:text="${user.userId}">
+                    1
+                </td>
+
+
+                <td>
+
+                    <span
+                            class="recent-username"
+                            th:text="${user.username}">
+                        username
+                    </span>
+
+                </td>
+
+
+                <td>
+
+                    <span
+                            class="recent-email"
+                            th:text="${user.email}">
+                        email@example.com
+                    </span>
+
+                </td>
+
+
+                <td>
+
+                    <span
+                            th:if="${user.role.name() == 'STUDENT'}"
+                            class="role-badge role-student">
+                        STUDENT
+                    </span>
+
+                    <span
+                            th:if="${user.role.name() == 'FACULTY'}"
+                            class="role-badge role-faculty">
+                        FACULTY
+                    </span>
+
+                    <span
+                            th:if="${user.role.name() == 'LIBRARIAN'}"
+                            class="role-badge role-librarian">
+                        LIBRARIAN
+                    </span>
+
+                    <span
+                            th:if="${user.role.name() == 'ADMIN'}"
+                            class="role-badge role-admin">
+                        ADMIN
+                    </span>
+
+                </td>
+
+
+                <td>
+
+                    <span
+                            th:if="${user.active}"
+                            class="account-badge account-active">
+                        ACTIVE
+                    </span>
+
+                    <span
+                            th:unless="${user.active}"
+                            class="account-badge account-inactive">
+                        INACTIVE
+                    </span>
+
+                </td>
+
+            </tr>
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+
+    <!-- View All Users -->
+
+    <a href="/admin/users"
+       class="view-all">
+
+        View All Users →
+
+    </a>
+
+
+    <!-- Bottom -->
+
+    <div class="bottom">
+
+        <a href="/admin/login"
+           class="logout">
+            ← Logout
+        </a>
+
+    </div>
+
+</div>
+
+</body>
+
+</html>

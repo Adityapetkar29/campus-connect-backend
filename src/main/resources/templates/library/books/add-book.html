@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Book - Campus Connect</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            background: #f4f6f9;
+        }
+
+        header {
+            background: #1e3a8a;
+            color: white;
+            padding: 20px 40px;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .container {
+            width: 500px;
+            margin: 50px auto;
+            background: white;
+            padding: 35px;
+            border-radius: 12px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.12);
+        }
+
+        h2 {
+            text-align: center;
+            color: #1e3a8a;
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            margin-top: 15px;
+            margin-bottom: 6px;
+            font-weight: bold;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 15px;
+        }
+
+        button {
+            width: 100%;
+            margin-top: 25px;
+            padding: 13px;
+            border: none;
+            border-radius: 6px;
+            background: #1e3a8a;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #162d6b;
+        }
+
+        .back {
+            display: block;
+            text-align: center;
+            margin-top: 15px;
+            color: #1e3a8a;
+            text-decoration: none;
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    📚 Campus Connect - Library
+</header>
+
+<div class="container">
+
+    <h2>➕ Add New Book</h2>
+
+    <form id="bookForm"
+          onsubmit="addBook(event)">
+
+        <label>Book Title</label>
+        <input type="text"
+               name="title"
+               placeholder="Enter book title"
+               required>
+
+        <label>Author</label>
+        <input type="text"
+               name="author"
+               placeholder="Enter author name"
+               required>
+
+        <label>ISBN</label>
+        <input type="text"
+               name="isbn"
+               placeholder="Enter ISBN">
+
+        <label>Quantity</label>
+        <input type="number"
+               id="quantity"
+               name="quantity"
+               min="1"
+               value="1"
+               required>
+
+        <button type="submit">
+            Add Book
+        </button>
+
+    </form>
+
+    <a class="back" href="/library">
+        ← Back to Library Dashboard
+    </a>
+
+</div>
+<script>
+    async function addBook(event) {
+
+        event.preventDefault();
+
+        const title = document.querySelector('input[name="title"]').value;
+        const author = document.querySelector('input[name="author"]').value;
+        const isbn = document.querySelector('input[name="isbn"]').value;
+        const quantity = parseInt(
+            document.querySelector('input[name="quantity"]').value
+        );
+
+        const book = {
+            title: title,
+            author: author,
+            isbn: isbn,
+            totalCopies: quantity,
+            availableCopies: quantity
+        };
+
+        try {
+
+            const response = await fetch("/api/library/books", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(book)
+            });
+
+            if (response.ok) {
+
+                alert("Book added successfully!");
+
+                window.location.href = "/library";
+
+            } else {
+
+                const error = await response.text();
+
+                alert("Book add failed: " + error);
+            }
+
+        } catch (error) {
+
+            console.error(error);
+
+            alert("Server error!");
+        }
+    }
+</script>
+
+</body>
+</html>

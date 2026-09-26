@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Campus Connect - Library Dashboard</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: "Segoe UI", Arial, sans-serif;
+            background: #f1f5f9;
+            color: #1e293b;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, #1e3a8a, #2563eb);
+            color: white;
+            padding: 28px 40px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.12);
+        }
+
+        .header-content {
+            max-width: 1150px;
+            margin: auto;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 28px;
+        }
+
+        .header p {
+            margin: 7px 0 0;
+            opacity: 0.9;
+        }
+
+        /* Main */
+        .container {
+            max-width: 1150px;
+            margin: 35px auto;
+            padding: 0 20px;
+        }
+
+        .welcome {
+            margin-bottom: 25px;
+        }
+
+        .welcome h2 {
+            margin: 0 0 6px;
+            font-size: 27px;
+        }
+
+        .welcome p {
+            margin: 0;
+            color: #64748b;
+        }
+
+        /* Statistics */
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+        }
+
+        .card {
+            background: white;
+            padding: 24px;
+            border-radius: 14px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+            transition: 0.2s;
+        }
+
+        .card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.09);
+        }
+
+        .card-icon {
+            width: 45px;
+            height: 45px;
+            border-radius: 10px;
+            background: #dbeafe;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            margin-bottom: 15px;
+        }
+
+        .card h3 {
+            margin: 0 0 8px;
+            color: #64748b;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .card p {
+            margin: 0;
+            font-size: 32px;
+            font-weight: 700;
+            color: #1e3a8a;
+        }
+
+        .overdue-card .card-icon {
+            background: #fee2e2;
+        }
+
+        .overdue-card p {
+            color: #dc2626;
+        }
+
+        /* Menu */
+        .menu {
+            margin-top: 30px;
+            background: white;
+            padding: 28px;
+            border-radius: 14px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+        }
+
+        .menu h2 {
+            margin: 0 0 6px;
+            font-size: 22px;
+        }
+
+        .menu-description {
+            color: #64748b;
+            margin: 0 0 22px;
+        }
+
+        .actions {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 14px;
+        }
+
+        .btn {
+            display: block;
+            padding: 14px 18px;
+            background: #1e3a8a;
+            color: white;
+            text-decoration: none;
+            border-radius: 9px;
+            font-weight: 600;
+            text-align: center;
+            transition: 0.2s;
+        }
+
+        .btn:hover {
+            background: #2563eb;
+            transform: translateY(-2px);
+        }
+
+        .btn-green {
+            background: #15803d;
+        }
+
+        .btn-green:hover {
+            background: #16a34a;
+        }
+
+        .btn-orange {
+            background: #d97706;
+        }
+
+        .btn-orange:hover {
+            background: #ea580c;
+        }
+
+        .btn-red {
+            background: #dc2626;
+        }
+
+        .btn-red:hover {
+            background: #ef4444;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            color: #94a3b8;
+            font-size: 13px;
+            margin-top: 35px;
+            padding-bottom: 25px;
+        }
+
+        /* Responsive */
+        @media (max-width: 900px) {
+            .cards {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .actions {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 600px) {
+            .header {
+                padding: 22px;
+            }
+
+            .header h1 {
+                font-size: 23px;
+            }
+
+            .container {
+                margin-top: 25px;
+            }
+
+            .cards {
+                grid-template-columns: 1fr;
+            }
+
+            .actions {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- Header -->
+<div class="header">
+    <div class="header-content">
+
+        <h1>📚 Campus Connect</h1>
+
+        <p>
+            Library Management System
+        </p>
+
+    </div>
+</div>
+
+
+<!-- Main -->
+<div class="container">
+
+    <div class="welcome">
+
+        <h2>Library Dashboard</h2>
+
+        <p>
+            Manage books, issues, returns and overdue records.
+        </p>
+
+    </div>
+
+
+    <!-- Statistics -->
+    <div class="cards">
+
+        <!-- Total Books -->
+        <div class="card">
+
+            <div class="card-icon">
+                📚
+            </div>
+
+            <h3>Total Books</h3>
+
+            <p th:text="${totalBooks}">
+                0
+            </p>
+
+        </div>
+
+
+        <!-- Available Books -->
+        <div class="card">
+
+            <div class="card-icon">
+                📗
+            </div>
+
+            <h3>Available Books</h3>
+
+            <p th:text="${availableBooks}">
+                0
+            </p>
+
+        </div>
+
+
+        <!-- Issued Books -->
+        <div class="card">
+
+            <div class="card-icon">
+                📖
+            </div>
+
+            <h3>Issued Books</h3>
+
+            <p th:text="${issuedBooks}">
+                0
+            </p>
+
+        </div>
+
+
+        <!-- Overdue Books -->
+        <div class="card overdue-card">
+
+            <div class="card-icon">
+                ⚠️
+            </div>
+
+            <h3>Overdue Books</h3>
+
+            <p th:text="${overdueBooks}">
+                0
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <!-- Library Actions -->
+    <div class="menu">
+
+        <h2>Quick Actions</h2>
+
+        <p class="menu-description">
+            Select an action to manage the library.
+        </p>
+
+        <div class="actions">
+
+            <a href="/library/books" class="btn">
+                📚 Manage Books
+            </a>
+
+            <a href="/library/books/add" class="btn btn-green">
+                ➕ Add Book
+            </a>
+
+            <a href="/library/books/issue" class="btn btn-orange">
+                📖 Issue Book
+            </a>
+
+            <a href="/library/issued" class="btn">
+                📥 Issued Books
+            </a>
+
+            <a href="/library/overdue" class="btn btn-red">
+                ⚠️ Overdue Books
+            </a>
+
+            <a href="/library/books" class="btn">
+                🔍 Search Books
+            </a>
+
+        </div>
+
+    </div>
+
+
+    <div class="footer">
+        Campus Connect © 2026 • Library Management
+    </div>
+
+</div>
+
+</body>
+</html>

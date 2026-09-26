@@ -1,0 +1,867 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Campus Connect - Student Management</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: "Segoe UI", Arial, sans-serif;
+            background: #f1f5f9;
+            color: #1e293b;
+        }
+
+        /* ================= HEADER ================= */
+
+        .header {
+            background: linear-gradient(135deg, #111827, #1e3a8a);
+            color: white;
+            padding: 28px 40px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+        }
+
+        .header-content {
+            max-width: 1150px;
+            margin: auto;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 28px;
+        }
+
+        .header p {
+            margin: 7px 0 0;
+            opacity: 0.85;
+        }
+
+        /* ================= CONTAINER ================= */
+
+        .container {
+            max-width: 1150px;
+            margin: 35px auto;
+            padding: 0 20px;
+        }
+
+        .page-heading {
+            margin-bottom: 25px;
+        }
+
+        .page-heading h2 {
+            margin: 0;
+            font-size: 27px;
+        }
+
+        .page-heading p {
+            margin: 6px 0 0;
+            color: #64748b;
+        }
+
+        /* ================= STATISTICS ================= */
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 18px;
+            margin-bottom: 25px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 14px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+
+        .stat-icon {
+            font-size: 25px;
+        }
+
+        .stat-number {
+            margin-top: 10px;
+            font-size: 26px;
+            font-weight: 700;
+            color: #1e3a8a;
+        }
+
+        .stat-label {
+            margin-top: 4px;
+            color: #64748b;
+            font-size: 14px;
+        }
+
+        /* ================= FILTERS ================= */
+
+        .filters-box {
+            background: white;
+            padding: 20px;
+            margin-bottom: 25px;
+            border-radius: 14px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+
+        .filters-form {
+            display: grid;
+            grid-template-columns: 2fr 1fr auto;
+            gap: 15px;
+            align-items: end;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 7px;
+        }
+
+        .filter-group label {
+            font-size: 12px;
+            font-weight: 700;
+            color: #475569;
+            text-transform: uppercase;
+        }
+
+        .filter-group input,
+        .filter-group select {
+            height: 42px;
+            padding: 0 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            background: white;
+            color: #1e293b;
+            font-size: 14px;
+            outline: none;
+        }
+
+        .filter-group input:focus,
+        .filter-group select:focus {
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        .filter-buttons {
+            display: flex;
+            gap: 8px;
+        }
+
+        .filter-btn,
+        .reset-btn {
+            height: 42px;
+            padding: 0 16px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            text-decoration: none;
+            cursor: pointer;
+
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .filter-btn {
+            background: #1e3a8a;
+            color: white;
+        }
+
+        .filter-btn:hover {
+            background: #2563eb;
+        }
+
+        .reset-btn {
+            background: #e2e8f0;
+            color: #334155;
+        }
+
+        .reset-btn:hover {
+            background: #cbd5e1;
+        }
+
+        /* ================= STUDENT TABLE ================= */
+
+        .students-box {
+            background: white;
+            border-radius: 14px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            background: #f8fafc;
+            color: #475569;
+            font-size: 12px;
+            text-transform: uppercase;
+            text-align: left;
+            padding: 16px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        td {
+            padding: 16px;
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 14px;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tr:hover {
+            background: #f8fafc;
+        }
+
+        .username {
+            font-weight: 700;
+            color: #1e3a8a;
+        }
+
+        .email {
+            color: #64748b;
+        }
+
+        /* ================= BADGES ================= */
+
+        .badge {
+            display: inline-block;
+            padding: 6px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .approved {
+            background: #dcfce7;
+            color: #15803d;
+        }
+
+        .pending {
+            background: #fef3c7;
+            color: #b45309;
+        }
+
+        .rejected {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+
+        .active {
+            background: #dcfce7;
+            color: #15803d;
+        }
+
+        .inactive {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+
+        /* ================= ACTIONS ================= */
+
+        .actions {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .action-form {
+            margin: 0;
+        }
+
+        .action-btn {
+            border: none;
+            padding: 7px 11px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s ease;
+        }
+
+        .action-btn:hover {
+            opacity: 0.8;
+            transform: translateY(-1px);
+        }
+
+        .deactivate-btn {
+            background: #fee2e2;
+            color: #b91c1c;
+        }
+
+        .activate-btn {
+            background: #dcfce7;
+            color: #15803d;
+        }
+
+        .delete-btn {
+            background: #fee2e2;
+            color: #b91c1c;
+        }
+
+        .delete-btn:hover {
+            background: #fecaca;
+        }
+
+        /* ================= EMPTY ================= */
+
+        .empty {
+            text-align: center;
+            padding: 60px 20px;
+            color: #64748b;
+        }
+
+        .empty-icon {
+            font-size: 50px;
+        }
+
+        .empty h3 {
+            color: #1e293b;
+            margin: 12px 0 5px;
+        }
+
+        /* ================= BACK ================= */
+
+        .bottom-actions {
+            margin-top: 30px;
+        }
+
+        .back-btn {
+            display: inline-block;
+            padding: 11px 20px;
+            background: #1e3a8a;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+        }
+
+        .back-btn:hover {
+            background: #2563eb;
+        }
+
+        /* ================= RESPONSIVE ================= */
+
+        @media (max-width: 900px) {
+
+            .stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .filters-form {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .filter-buttons {
+                grid-column: 1 / -1;
+            }
+        }
+
+        @media (max-width: 600px) {
+
+            .header {
+                padding: 22px;
+            }
+
+            .header h1 {
+                font-size: 23px;
+            }
+
+            .container {
+                margin-top: 25px;
+            }
+
+            .stats {
+                grid-template-columns: 1fr;
+            }
+
+            .filters-form {
+                grid-template-columns: 1fr;
+            }
+
+            .filter-buttons {
+                grid-column: auto;
+            }
+
+            .filter-btn,
+            .reset-btn {
+                flex: 1;
+            }
+
+            th,
+            td {
+                padding: 12px;
+            }
+
+            .actions {
+                flex-direction: column;
+            }
+
+            .action-form {
+                width: 100%;
+            }
+        }
+
+    </style>
+</head>
+
+<body>
+
+<!-- ================= HEADER ================= -->
+
+<div class="header">
+
+    <div class="header-content">
+
+        <h1>🛡️ Campus Connect</h1>
+
+        <p>
+            Admin Panel • Student Management
+        </p>
+
+    </div>
+
+</div>
+
+
+<!-- ================= MAIN ================= -->
+
+<div class="container">
+
+    <!-- Heading -->
+
+    <div class="page-heading">
+
+        <h2>
+            Student Management
+        </h2>
+
+        <p>
+            Search and manage all registered students.
+        </p>
+
+    </div>
+
+
+    <!-- ================= STATISTICS ================= -->
+
+    <div class="stats">
+
+        <!-- Total -->
+
+        <div class="stat-card">
+
+            <div class="stat-icon">
+                👨‍🎓
+            </div>
+
+            <div class="stat-number"
+                 th:text="${totalStudents}">
+                0
+            </div>
+
+            <div class="stat-label">
+                Total Students
+            </div>
+
+        </div>
+
+
+        <!-- Active -->
+
+        <div class="stat-card">
+
+            <div class="stat-icon">
+                🟢
+            </div>
+
+            <div class="stat-number"
+                 th:text="${activeStudents}">
+                0
+            </div>
+
+            <div class="stat-label">
+                Active Students
+            </div>
+
+        </div>
+
+
+        <!-- Inactive -->
+
+        <div class="stat-card">
+
+            <div class="stat-icon">
+                🔴
+            </div>
+
+            <div class="stat-number"
+                 th:text="${inactiveStudents}">
+                0
+            </div>
+
+            <div class="stat-label">
+                Inactive Students
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- ================= FILTERS ================= -->
+
+    <div class="filters-box">
+
+        <form
+                action="/admin/students"
+                method="get"
+                class="filters-form">
+
+            <!-- Search -->
+
+            <div class="filter-group">
+
+                <label>
+                    Search
+                </label>
+
+                <input
+                        type="text"
+                        name="search"
+                        placeholder="Username or email..."
+                        th:value="${search}">
+
+            </div>
+
+
+            <!-- Account -->
+
+            <div class="filter-group">
+
+                <label>
+                    Account
+                </label>
+
+                <select name="active">
+
+                    <option value="">
+                        All Accounts
+                    </option>
+
+                    <option
+                            value="true"
+                            th:selected="${selectedActive == 'true'}">
+                        Active
+                    </option>
+
+                    <option
+                            value="false"
+                            th:selected="${selectedActive == 'false'}">
+                        Inactive
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <!-- Buttons -->
+
+            <div class="filter-buttons">
+
+                <button
+                        type="submit"
+                        class="filter-btn">
+
+                    🔍 Filter
+
+                </button>
+
+
+                <a
+                        href="/admin/students"
+                        class="reset-btn">
+
+                    ↻ Reset
+
+                </a>
+
+            </div>
+
+        </form>
+
+    </div>
+
+
+    <!-- ================= STUDENTS ================= -->
+
+    <div class="students-box">
+
+        <!-- Empty -->
+
+        <div
+                th:if="${#lists.isEmpty(students)}"
+                class="empty">
+
+            <div class="empty-icon">
+                👨‍🎓
+            </div>
+
+            <h3>
+                No Students Found
+            </h3>
+
+            <p>
+                No students match your current search or filter.
+            </p>
+
+        </div>
+
+
+        <!-- Table -->
+
+        <table
+                th:if="${!#lists.isEmpty(students)}">
+
+            <thead>
+
+            <tr>
+
+                <th>
+                    ID
+                </th>
+
+                <th>
+                    Username
+                </th>
+
+                <th>
+                    Email
+                </th>
+
+                <th>
+                    Role
+                </th>
+
+                <th>
+                    Status
+                </th>
+
+                <th>
+                    Account
+                </th>
+
+                <th>
+                    Actions
+                </th>
+
+            </tr>
+
+            </thead>
+
+
+            <tbody>
+
+            <tr
+                    th:each="student : ${students}">
+
+                <!-- ID -->
+
+                <td
+                        th:text="${student.userId}">
+                    1
+                </td>
+
+
+                <!-- Username -->
+
+                <td>
+
+                    <span
+                            class="username"
+                            th:text="${student.username}">
+                        student
+                    </span>
+
+                </td>
+
+
+                <!-- Email -->
+
+                <td>
+
+                    <span
+                            class="email"
+                            th:text="${student.email}">
+                        student@email.com
+                    </span>
+
+                </td>
+
+
+                <!-- Role -->
+
+                <td>
+
+                    <span class="badge"
+                          style="background:#dbeafe; color:#1d4ed8;">
+                        STUDENT
+                    </span>
+
+                </td>
+
+
+                <!-- Status -->
+
+                <td>
+
+                    <span
+                            th:if="${student.status.name() == 'APPROVED'}"
+                            class="badge approved">
+                        APPROVED
+                    </span>
+
+                    <span
+                            th:if="${student.status.name() == 'PENDING'}"
+                            class="badge pending">
+                        PENDING
+                    </span>
+
+                    <span
+                            th:if="${student.status.name() == 'REJECTED'}"
+                            class="badge rejected">
+                        REJECTED
+                    </span>
+
+                </td>
+
+
+                <!-- Account -->
+
+                <td>
+
+                    <span
+                            th:if="${student.active}"
+                            class="badge active">
+                        ACTIVE
+                    </span>
+
+                    <span
+                            th:unless="${student.active}"
+                            class="badge inactive">
+                        INACTIVE
+                    </span>
+
+                </td>
+
+
+                <!-- Actions -->
+
+                <td>
+
+                    <div class="actions">
+
+                        <!-- Deactivate -->
+
+                        <form
+                                th:if="${student.active}"
+                                class="action-form"
+                                th:action="@{'/admin/users/toggle/' + ${student.userId}}"
+                                method="post">
+
+                            <button
+                                    type="submit"
+                                    class="action-btn deactivate-btn"
+                                    onclick="return confirm('Are you sure you want to deactivate this student?');">
+
+                                Deactivate
+
+                            </button>
+
+                        </form>
+
+
+                        <!-- Activate -->
+
+                        <form
+                                th:unless="${student.active}"
+                                class="action-form"
+                                th:action="@{'/admin/users/toggle/' + ${student.userId}}"
+                                method="post">
+
+                            <button
+                                    type="submit"
+                                    class="action-btn activate-btn"
+                                    onclick="return confirm('Are you sure you want to activate this student?');">
+
+                                Activate
+
+                            </button>
+
+                        </form>
+
+
+                        <!-- Delete -->
+
+                        <form
+                                class="action-form"
+                                th:action="@{'/admin/users/delete/' + ${student.userId}}"
+                                method="post">
+
+                            <button
+                                    type="submit"
+                                    class="action-btn delete-btn"
+                                    onclick="return confirm('Are you sure you want to permanently delete this student?');">
+
+                                🗑️ Delete
+
+                            </button>
+
+                        </form>
+
+                    </div>
+
+                </td>
+
+            </tr>
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+
+    <!-- ================= BACK ================= -->
+
+    <div class="bottom-actions">
+
+        <a
+                href="/admin"
+                class="back-btn">
+
+            ← Back to Admin Dashboard
+
+        </a>
+
+    </div>
+
+</div>
+
+</body>
+
+</html>
