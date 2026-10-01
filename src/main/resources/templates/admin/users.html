@@ -619,7 +619,7 @@
                                      and user.status.name() == 'PENDING'}">
 
                             <form
-                                    th:action="@{'/admin/students/approve/' + ${user.userId}}"
+                                    th:action="@{'/admin/users/approve-student/' + ${user.userId}}"
                                     method="post"
                                     style="display:inline;">
 
@@ -633,7 +633,7 @@
                             </form>
 
                             <form
-                                    th:action="@{'/admin/students/reject/' + ${user.userId}}"
+                                    th:action="@{'/admin/users/reject-student/' + ${user.userId}}"
                                     method="post"
                                     style="display:inline;">
 
