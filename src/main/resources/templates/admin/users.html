@@ -61,8 +61,6 @@
             color: #64748b;
         }
 
-        /* Summary Cards */
-
         .summary {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
@@ -94,8 +92,6 @@
             color: #64748b;
             font-size: 14px;
         }
-
-        /* User Table */
 
         .users-box {
             background: white;
@@ -143,8 +139,6 @@
             color: #64748b;
         }
 
-        /* Role Badges */
-
         .badge {
             display: inline-block;
             padding: 6px 10px;
@@ -173,8 +167,6 @@
             color: #b91c1c;
         }
 
-        /* Status */
-
         .approved {
             background: #dcfce7;
             color: #15803d;
@@ -190,8 +182,6 @@
             color: #dc2626;
         }
 
-        /* Active */
-
         .active {
             background: #dcfce7;
             color: #15803d;
@@ -202,12 +192,10 @@
             color: #dc2626;
         }
 
-        /* Account Actions */
-
         .account-actions {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
             flex-wrap: wrap;
         }
 
@@ -236,18 +224,20 @@
             color: #15803d;
         }
 
-        /* Delete */
+        .approve-btn {
+            background: #dcfce7;
+            color: #15803d;
+        }
+
+        .reject-btn {
+            background: #fee2e2;
+            color: #b91c1c;
+        }
 
         .delete-btn {
             background: #fee2e2;
             color: #b91c1c;
         }
-
-        .delete-btn:hover {
-            background: #fecaca;
-        }
-
-        /* Empty */
 
         .empty {
             text-align: center;
@@ -263,28 +253,6 @@
             color: #1e293b;
             margin: 12px 0 5px;
         }
-
-        /* Back */
-
-        .bottom-actions {
-            margin-top: 30px;
-        }
-
-        .back-btn {
-            display: inline-block;
-            padding: 11px 20px;
-            background: #1e3a8a;
-            color: white;
-            text-decoration: none;
-            border-radius: 8px;
-            font-weight: 600;
-        }
-
-        .back-btn:hover {
-            background: #2563eb;
-        }
-
-        /* Filters */
 
         .filters-box {
             background: white;
@@ -327,12 +295,6 @@
             outline: none;
         }
 
-        .filter-group input:focus,
-        .filter-group select:focus {
-            border-color: #2563eb;
-            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
-        }
-
         .filter-buttons {
             display: flex;
             gap: 8px;
@@ -347,7 +309,6 @@
             font-weight: 600;
             text-decoration: none;
             cursor: pointer;
-
             display: inline-flex;
             align-items: center;
             justify-content: center;
@@ -358,74 +319,39 @@
             color: white;
         }
 
-        .filter-btn:hover {
-            background: #2563eb;
-        }
-
         .reset-btn {
             background: #e2e8f0;
             color: #334155;
         }
 
-        .reset-btn:hover {
-            background: #cbd5e1;
-        }
-
-        /* Responsive */
-
         @media (max-width: 1000px) {
-
             .filters-form {
                 grid-template-columns: repeat(2, 1fr);
             }
         }
 
         @media (max-width: 900px) {
-
             .summary {
                 grid-template-columns: repeat(2, 1fr);
             }
         }
 
         @media (max-width: 600px) {
-
             .header {
                 padding: 22px;
-            }
-
-            .header h1 {
-                font-size: 23px;
-            }
-
-            .container {
-                margin-top: 25px;
             }
 
             .summary {
                 grid-template-columns: 1fr;
             }
 
-            th,
-            td {
-                padding: 12px;
-            }
-
-            .account-actions {
-                align-items: flex-start;
-                flex-direction: column;
-            }
-
             .filters-form {
                 grid-template-columns: 1fr;
             }
 
-            .filter-buttons {
-                width: 100%;
-            }
-
-            .filter-btn,
-            .reset-btn {
-                flex: 1;
+            .account-actions {
+                flex-direction: column;
+                align-items: flex-start;
             }
         }
     </style>
@@ -433,145 +359,73 @@
 
 <body>
 
-<!-- Header -->
-
 <div class="header">
-
     <div class="header-content">
-
         <h1>🛡️ Campus Connect</h1>
-
-        <p>
-            Admin Panel • User Management
-        </p>
-
+        <p>Admin Panel • User Management</p>
     </div>
-
 </div>
-
-
-<!-- Main -->
 
 <div class="container">
 
-    <!-- Heading -->
-
     <div class="page-heading">
-
         <h2>User Management</h2>
-
         <p>
-            View all registered students, faculty, librarians and administrators.
+            View and manage registered students, faculty, librarians and administrators.
         </p>
-
     </div>
 
-
-    <!-- Summary -->
+    <!-- SUMMARY -->
 
     <div class="summary">
 
         <div class="summary-card">
-
-            <div class="summary-icon">
-                👨‍🎓
-            </div>
-
-            <div class="summary-number"
-                 th:text="${totalStudents}">
-                0
-            </div>
-
-            <div class="summary-label">
-                Students
-            </div>
-
+            <div class="summary-icon">👨‍🎓</div>
+            <div class="summary-number" th:text="${totalStudents}">0</div>
+            <div class="summary-label">Students</div>
         </div>
 
-
         <div class="summary-card">
-
-            <div class="summary-icon">
-                👨‍🏫
-            </div>
-
-            <div class="summary-number"
-                 th:text="${totalFaculty}">
-                0
-            </div>
-
-            <div class="summary-label">
-                Faculty
-            </div>
-
+            <div class="summary-icon">👨‍🏫</div>
+            <div class="summary-number" th:text="${totalFaculty}">0</div>
+            <div class="summary-label">Faculty</div>
         </div>
 
-
         <div class="summary-card">
-
-            <div class="summary-icon">
-                📚
-            </div>
-
-            <div class="summary-number"
-                 th:text="${totalLibrarians}">
-                0
-            </div>
-
-            <div class="summary-label">
-                Librarians
-            </div>
-
+            <div class="summary-icon">📚</div>
+            <div class="summary-number" th:text="${totalLibrarians}">0</div>
+            <div class="summary-label">Librarians</div>
         </div>
 
-
         <div class="summary-card">
-
-            <div class="summary-icon">
-                👥
-            </div>
-
-            <div class="summary-number"
-                 th:text="${totalUsers}">
-                0
-            </div>
-
-            <div class="summary-label">
-                Total Users
-            </div>
-
+            <div class="summary-icon">👥</div>
+            <div class="summary-number" th:text="${totalUsers}">0</div>
+            <div class="summary-label">Total Users</div>
         </div>
 
     </div>
 
-
-    <!-- Filters -->
+    <!-- FILTERS -->
 
     <div class="filters-box">
 
         <form action="/admin/users" method="get" class="filters-form">
 
             <div class="filter-group">
-
                 <label>Search</label>
 
                 <input type="text"
                        name="search"
                        placeholder="Username or email..."
                        th:value="${search}">
-
             </div>
 
-
             <div class="filter-group">
-
                 <label>Role</label>
 
                 <select name="role">
 
-                    <option value="">
-                        All Roles
-                    </option>
+                    <option value="">All Roles</option>
 
                     <option value="STUDENT"
                             th:selected="${selectedRole == 'STUDENT'}">
@@ -594,19 +448,14 @@
                     </option>
 
                 </select>
-
             </div>
 
-
             <div class="filter-group">
-
                 <label>Status</label>
 
                 <select name="status">
 
-                    <option value="">
-                        All Status
-                    </option>
+                    <option value="">All Status</option>
 
                     <option value="APPROVED"
                             th:selected="${selectedStatus == 'APPROVED'}">
@@ -624,19 +473,14 @@
                     </option>
 
                 </select>
-
             </div>
 
-
             <div class="filter-group">
-
                 <label>Account</label>
 
                 <select name="active">
 
-                    <option value="">
-                        All Accounts
-                    </option>
+                    <option value="">All Accounts</option>
 
                     <option value="true"
                             th:selected="${selectedActive == 'true'}">
@@ -649,9 +493,7 @@
                     </option>
 
                 </select>
-
             </div>
-
 
             <div class="filter-buttons">
 
@@ -669,211 +511,185 @@
 
     </div>
 
-
-    <!-- Users Table -->
+    <!-- USERS TABLE -->
 
     <div class="users-box">
 
-        <div th:if="${#lists.isEmpty(users)}"
-             class="empty">
+        <div th:if="${#lists.isEmpty(users)}" class="empty">
 
-            <div class="empty-icon">
-                👥
-            </div>
+            <div class="empty-icon">👥</div>
 
-            <h3>
-                No Users Found
-            </h3>
+            <h3>No Users Found</h3>
 
-            <p>
-                There are currently no registered users.
-            </p>
+            <p>There are currently no registered users.</p>
 
         </div>
-
 
         <table th:if="${!#lists.isEmpty(users)}">
 
             <thead>
 
             <tr>
-
-                <th>
-                    ID
-                </th>
-
-                <th>
-                    Username
-                </th>
-
-                <th>
-                    Email
-                </th>
-
-                <th>
-                    Role
-                </th>
-
-                <th>
-                    Status
-                </th>
-
-                <th>
-                    Account
-                </th>
-
+                <th>ID</th>
+                <th>Username</th>
+                <th>Email</th>
+                <th>Role</th>
+                <th>Status</th>
+                <th>Account / Actions</th>
             </tr>
 
             </thead>
-
 
             <tbody>
 
             <tr th:each="user : ${users}">
 
-                <td th:text="${user.userId}">
-                    1
-                </td>
-
+                <td th:text="${user.userId}">1</td>
 
                 <td>
-
                     <span class="username"
                           th:text="${user.username}">
                         username
                     </span>
-
                 </td>
 
-
                 <td>
-
                     <span class="email"
                           th:text="${user.email}">
                         email@example.com
                     </span>
-
                 </td>
 
+                <!-- ROLE -->
 
                 <td>
 
-                    <span
-                            th:if="${user.role.name() == 'STUDENT'}"
-                            class="badge student"
-                            th:text="${user.role}">
+                    <span th:if="${user.role.name() == 'STUDENT'}"
+                          class="badge student">
                         STUDENT
                     </span>
 
-                    <span
-                            th:if="${user.role.name() == 'FACULTY'}"
-                            class="badge faculty"
-                            th:text="${user.role}">
+                    <span th:if="${user.role.name() == 'FACULTY'}"
+                          class="badge faculty">
                         FACULTY
                     </span>
 
-                    <span
-                            th:if="${user.role.name() == 'LIBRARIAN'}"
-                            class="badge librarian"
-                            th:text="${user.role}">
+                    <span th:if="${user.role.name() == 'LIBRARIAN'}"
+                          class="badge librarian">
                         LIBRARIAN
                     </span>
 
-                    <span
-                            th:if="${user.role.name() == 'ADMIN'}"
-                            class="badge admin"
-                            th:text="${user.role}">
+                    <span th:if="${user.role.name() == 'ADMIN'}"
+                          class="badge admin">
                         ADMIN
                     </span>
 
                 </td>
 
+                <!-- STATUS -->
 
                 <td>
 
-                    <span
-                            th:if="${user.status.name() == 'APPROVED'}"
-                            class="badge approved"
-                            th:text="${user.status}">
+                    <span th:if="${user.status.name() == 'APPROVED'}"
+                          class="badge approved">
                         APPROVED
                     </span>
 
-                    <span
-                            th:if="${user.status.name() == 'PENDING'}"
-                            class="badge pending"
-                            th:text="${user.status}">
+                    <span th:if="${user.status.name() == 'PENDING'}"
+                          class="badge pending">
                         PENDING
                     </span>
 
-                    <span
-                            th:if="${user.status.name() == 'REJECTED'}"
-                            class="badge rejected"
-                            th:text="${user.status}">
+                    <span th:if="${user.status.name() == 'REJECTED'}"
+                          class="badge rejected">
                         REJECTED
                     </span>
 
                 </td>
 
-
-                <!-- Account -->
+                <!-- ACTIONS -->
 
                 <td>
 
                     <div class="account-actions">
 
-                        <!-- Active -->
+                        <!-- STUDENT APPROVAL -->
 
-                        <span
-                                th:if="${user.active}"
-                                class="badge active">
+                        <div th:if="${user.role.name() == 'STUDENT'
+                                     and user.status.name() == 'PENDING'}">
+
+                            <form
+                                    th:action="@{'/admin/students/approve/' + ${user.userId}}"
+                                    method="post"
+                                    style="display:inline;">
+
+                                <button
+                                        type="submit"
+                                        class="toggle-btn approve-btn"
+                                        onclick="return confirm('Approve this student?');">
+                                    ✅ Approve
+                                </button>
+
+                            </form>
+
+                            <form
+                                    th:action="@{'/admin/students/reject/' + ${user.userId}}"
+                                    method="post"
+                                    style="display:inline;">
+
+                                <button
+                                        type="submit"
+                                        class="toggle-btn reject-btn"
+                                        onclick="return confirm('Reject this student?');">
+                                    ❌ Reject
+                                </button>
+
+                            </form>
+
+                        </div>
+
+                        <!-- ACCOUNT STATUS -->
+
+                        <span th:if="${user.active}"
+                              class="badge active">
                             ACTIVE
                         </span>
 
-
-                        <!-- Inactive -->
-
-                        <span
-                                th:unless="${user.active}"
-                                class="badge inactive">
+                        <span th:unless="${user.active}"
+                              class="badge inactive">
                             INACTIVE
                         </span>
 
+                        <!-- ACTIVATE -->
 
-                        <!-- Deactivate Button -->
-
-                        <form
-                                th:if="${user.active}"
-                                th:action="@{'/admin/users/toggle/' + ${user.userId}}"
-                                method="post">
+                        <form th:if="${user.active == false}"
+                              th:action="@{'/admin/users/toggle/' + ${user.userId}}"
+                              method="post">
 
                             <button
                                     type="submit"
-                                    class="toggle-btn deactivate-btn"
-                                    onclick="return confirm('Are you sure you want to deactivate this user?');">
-                                Deactivate
-                            </button>
-
-                        </form>
-
-
-                        <!-- Activate Button -->
-
-                        <form
-                                th:unless="${user.active}"
-                                th:action="@{'/admin/users/toggle/' + ${user.userId}}"
-                                method="post">
-
-                            <button
-                                    type="submit"
-                                    class="toggle-btn activate-btn"
-                                    onclick="return confirm('Are you sure you want to activate this user?');">
+                                    class="toggle-btn activate-btn">
                                 Activate
                             </button>
 
                         </form>
 
+                        <!-- DEACTIVATE -->
 
-                        <!-- Delete Button -->
+                        <form th:if="${user.active == true}"
+                              th:action="@{'/admin/users/toggle/' + ${user.userId}}"
+                              method="post">
+
+                            <button
+                                    type="submit"
+                                    class="toggle-btn deactivate-btn"
+                                    onclick="return confirm('Deactivate this user?');">
+                                Deactivate
+                            </button>
+
+                        </form>
+
+                        <!-- DELETE -->
 
                         <form
                                 th:if="${user.role.name() != 'ADMIN'}"
@@ -883,7 +699,7 @@
                             <button
                                     type="submit"
                                     class="toggle-btn delete-btn"
-                                    onclick="return confirm('Are you sure you want to permanently delete this user?');">
+                                    onclick="return confirm('Permanently delete this user?');">
                                 🗑️ Delete
                             </button>
 
@@ -892,3 +708,16 @@
                     </div>
 
                 </td>
+
+            </tr>
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+</body>
+</html>
