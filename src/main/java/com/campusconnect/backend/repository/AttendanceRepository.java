@@ -5,14 +5,13 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 
-public interface AttendanceRepository
-        extends JpaRepository<Attendance, Long> {
+public interface AttendanceRepository extends JpaRepository<Attendance, Long> {
 
-    List<Attendance> findByFacultyUsername(
+    List<Attendance> findByFacultyUsername(String facultyUsername);
+
+    List<Attendance> findByStudentUsername(String studentUsername);
+
+    List<Attendance> findByFacultyUsernameOrderByAttendanceDateDesc(
             String facultyUsername
-    );
-
-    List<Attendance> findByStudentUsername(
-            String studentUsername
     );
 }

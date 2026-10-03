@@ -10,7 +10,10 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/faculty/attendance")
@@ -27,6 +30,10 @@ public class AttendanceController {
         this.userRepository = userRepository;
     }
 
+    // ---------------------------------------------------------
+    // GET APPROVED STUDENTS
+    // ---------------------------------------------------------
+
     @GetMapping("/students")
     public ResponseEntity<?> getStudents() {
 
@@ -42,25 +49,44 @@ public class AttendanceController {
         return ResponseEntity.ok(students);
     }
 
+    // ---------------------------------------------------------
+    // GET ATTENDANCE RECORDS
+    // ---------------------------------------------------------
+
     @GetMapping
     public ResponseEntity<?> getAttendance(
             @RequestParam(required = false) String studentUsername,
             @RequestParam(required = false) String facultyUsername) {
 
-        if (studentUsername != null && !studentUsername.isEmpty()) {
+        if (studentUsername != null
+                && !studentUsername.isEmpty()) {
+
             return ResponseEntity.ok(
-                    attendanceRepository.findByStudentUsername(studentUsername)
+                    attendanceRepository.findByStudentUsername(
+                            studentUsername
+                    )
             );
         }
 
-        if (facultyUsername != null && !facultyUsername.isEmpty()) {
+        if (facultyUsername != null
+                && !facultyUsername.isEmpty()) {
+
             return ResponseEntity.ok(
-                    attendanceRepository.findByFacultyUsername(facultyUsername)
+                    attendanceRepository
+                            .findByFacultyUsernameOrderByAttendanceDateDesc(
+                                    facultyUsername
+                            )
             );
         }
 
-        return ResponseEntity.ok(attendanceRepository.findAll());
+        return ResponseEntity.ok(
+                attendanceRepository.findAll()
+        );
     }
+
+    // ---------------------------------------------------------
+    // SAVE SINGLE ATTENDANCE
+    // ---------------------------------------------------------
 
     @PostMapping
     public ResponseEntity<?> saveAttendance(
@@ -75,6 +101,10 @@ public class AttendanceController {
 
         return ResponseEntity.ok(savedAttendance);
     }
+
+    // ---------------------------------------------------------
+    // SAVE BULK ATTENDANCE
+    // ---------------------------------------------------------
 
     @PostMapping("/bulk")
     public ResponseEntity<?> saveBulkAttendance(
@@ -101,7 +131,9 @@ public class AttendanceController {
         } else {
 
             attendanceDate =
-                    LocalDate.parse(request.getAttendanceDate());
+                    LocalDate.parse(
+                            request.getAttendanceDate()
+                    );
         }
 
         List<Attendance> savedAttendance =
@@ -116,7 +148,8 @@ public class AttendanceController {
                 continue;
             }
 
-            Attendance attendance = new Attendance();
+            Attendance attendance =
+                    new Attendance();
 
             attendance.setStudentUsername(
                     item.getStudentUsername()
@@ -135,10 +168,263 @@ public class AttendanceController {
             );
 
             savedAttendance.add(
-                    attendanceRepository.save(attendance)
+                    attendanceRepository.save(
+                            attendance
+                    )
             );
         }
 
-        return ResponseEntity.ok(savedAttendance);
+        return ResponseEntity.ok(
+                savedAttendance
+        );
+    }
+
+    // ---------------------------------------------------------
+    // ATTENDANCE HISTORY
+    // ---------------------------------------------------------
+
+    @GetMapping("/history")
+    public ResponseEntity<?> getAttendanceHistory(
+            @RequestParam String facultyUsername) {
+
+        List<Attendance> attendanceList =
+                attendanceRepository
+                        .findByFacultyUsernameOrderByAttendanceDateDesc(
+                                facultyUsername
+                        );
+
+        return ResponseEntity.ok(
+                attendanceList
+        );
+    }
+
+    // ---------------------------------------------------------
+    // STUDENT-WISE ATTENDANCE SUMMARY
+    // ---------------------------------------------------------
+
+    @GetMapping("/summary")
+    public ResponseEntity<?> getAttendanceSummary(
+            @RequestParam String facultyUsername) {
+
+        List<Attendance> attendanceList =
+                attendanceRepository
+                        .findByFacultyUsername(
+                                facultyUsername
+                        );
+
+        Map<String, List<Attendance>> groupedAttendance =
+                new LinkedHashMap<>();
+
+        for (Attendance attendance : attendanceList) {
+
+            groupedAttendance
+                    .computeIfAbsent(
+                            attendance.getStudentUsername(),
+                            key -> new ArrayList<>()
+                    )
+                    .add(attendance);
+        }
+
+        List<Map<String, Object>> summary =
+                new ArrayList<>();
+
+        for (Map.Entry<String, List<Attendance>> entry
+                : groupedAttendance.entrySet()) {
+
+            String studentUsername =
+                    entry.getKey();
+
+            List<Attendance> studentAttendance =
+                    entry.getValue();
+
+            int totalClasses =
+                    studentAttendance.size();
+
+            int presentCount =
+                    (int) studentAttendance
+                            .stream()
+                            .filter(Attendance::isPresent)
+                            .count();
+
+            int absentCount =
+                    totalClasses - presentCount;
+
+            double attendancePercentage = 0.0;
+
+            if (totalClasses > 0) {
+
+                attendancePercentage =
+                        (presentCount * 100.0)
+                                / totalClasses;
+            }
+
+            User student =
+                    userRepository
+                            .findByUsername(
+                                    studentUsername
+                            )
+                            .orElse(null);
+
+            Map<String, Object> studentSummary =
+                    new LinkedHashMap<>();
+
+            studentSummary.put(
+                    "username",
+                    studentUsername
+            );
+
+            studentSummary.put(
+                    "fullName",
+                    student != null
+                            ? student.getFullName()
+                            : studentUsername
+            );
+
+            studentSummary.put(
+                    "rollNo",
+                    student != null
+                            ? student.getRollNo()
+                            : ""
+            );
+
+            studentSummary.put(
+                    "totalClasses",
+                    totalClasses
+            );
+
+            studentSummary.put(
+                    "present",
+                    presentCount
+            );
+
+            studentSummary.put(
+                    "absent",
+                    absentCount
+            );
+
+            studentSummary.put(
+                    "percentage",
+                    Math.round(
+                            attendancePercentage * 100.0
+                    ) / 100.0
+            );
+
+            summary.add(
+                    studentSummary
+            );
+        }
+
+        summary.sort(
+                Comparator.comparing(
+                        item ->
+                                item.get("fullName")
+                                        .toString()
+                )
+        );
+
+        return ResponseEntity.ok(
+                summary
+        );
+    }
+
+    // ---------------------------------------------------------
+    // INDIVIDUAL STUDENT ATTENDANCE SUMMARY
+    // ---------------------------------------------------------
+
+    @GetMapping("/summary/student")
+    public ResponseEntity<?> getStudentAttendanceSummary(
+            @RequestParam String facultyUsername,
+            @RequestParam String studentUsername) {
+
+        List<Attendance> attendanceList =
+                attendanceRepository
+                        .findByFacultyUsername(
+                                facultyUsername
+                        )
+                        .stream()
+                        .filter(attendance ->
+                                attendance
+                                        .getStudentUsername()
+                                        .equalsIgnoreCase(
+                                                studentUsername
+                                        )
+                        )
+                        .toList();
+
+        int totalClasses =
+                attendanceList.size();
+
+        int presentCount =
+                (int) attendanceList
+                        .stream()
+                        .filter(Attendance::isPresent)
+                        .count();
+
+        int absentCount =
+                totalClasses - presentCount;
+
+        double percentage = 0.0;
+
+        if (totalClasses > 0) {
+
+            percentage =
+                    (presentCount * 100.0)
+                            / totalClasses;
+        }
+
+        User student =
+                userRepository
+                        .findByUsername(
+                                studentUsername
+                        )
+                        .orElse(null);
+
+        Map<String, Object> result =
+                new LinkedHashMap<>();
+
+        result.put(
+                "username",
+                studentUsername
+        );
+
+        result.put(
+                "fullName",
+                student != null
+                        ? student.getFullName()
+                        : studentUsername
+        );
+
+        result.put(
+                "rollNo",
+                student != null
+                        ? student.getRollNo()
+                        : ""
+        );
+
+        result.put(
+                "totalClasses",
+                totalClasses
+        );
+
+        result.put(
+                "present",
+                presentCount
+        );
+
+        result.put(
+                "absent",
+                absentCount
+        );
+
+        result.put(
+                "percentage",
+                Math.round(
+                        percentage * 100.0
+                ) / 100.0
+        );
+
+        return ResponseEntity.ok(
+                result
+        );
     }
 }
