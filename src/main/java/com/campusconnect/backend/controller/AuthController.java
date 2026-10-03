@@ -1,16 +1,15 @@
 package com.campusconnect.backend.controller;
 
+import com.campusconnect.backend.dto.LoginRequest;
 import com.campusconnect.backend.dto.RegisterRequest;
 import com.campusconnect.backend.entity.User;
 import com.campusconnect.backend.repository.UserRepository;
-import com.campusconnect.backend.dto.LoginRequest;
+import com.campusconnect.backend.service.JwtService;
 import jakarta.validation.Valid;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
-import com.campusconnect.backend.service.JwtService;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -51,14 +50,15 @@ public class AuthController {
         user.setUsername(request.getUsername());
         user.setEmail(request.getEmail());
 
-        // Password ko plain text me database me save nahi karenge
+        user.setFullName(request.getFullName());
+        user.setRollNo(request.getRollNo());
+
         user.setPasswordHash(
                 passwordEncoder.encode(request.getPassword())
         );
 
         user.setRole(request.getRole());
 
-        // Registration ke baad approval required
         user.setStatus(User.Status.PENDING);
 
         user.setActive(true);
@@ -69,6 +69,7 @@ public class AuthController {
                 .status(HttpStatus.CREATED)
                 .body(savedUser);
     }
+
     @PostMapping("/login")
     public ResponseEntity<?> login(
             @Valid @RequestBody LoginRequest request) {

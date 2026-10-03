@@ -17,6 +17,12 @@ public class User {
     @Column(nullable = false, unique = true, length = 100)
     private String email;
 
+    @Column(name = "full_name", length = 150)
+    private String fullName;
+
+    @Column(name = "roll_no", length = 50)
+    private String rollNo;
+
     @Column(name = "password_hash", nullable = false, length = 255)
     private String passwordHash;
 
@@ -36,7 +42,6 @@ public class User {
         FACULTY,
         ADMIN,
         LIBRARIAN
-
     }
 
     public enum Status {
@@ -67,6 +72,22 @@ public class User {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getFullName() {
+        return fullName;
+    }
+
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
+    }
+
+    public String getRollNo() {
+        return rollNo;
+    }
+
+    public void setRollNo(String rollNo) {
+        this.rollNo = rollNo;
     }
 
     public String getPasswordHash() {
