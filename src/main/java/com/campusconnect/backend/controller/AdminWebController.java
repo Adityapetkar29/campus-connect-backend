@@ -58,6 +58,13 @@ public class AdminWebController {
                 )
                 .count();
 
+        long pendingStudents = users.stream()
+                .filter(user ->
+                        user.getRole() == User.Role.STUDENT
+                                && user.getStatus() == User.Status.PENDING
+                )
+                .count();
+
         long totalLibrarians = users.stream()
                 .filter(user -> user.getRole() == User.Role.LIBRARIAN)
                 .count();
@@ -65,6 +72,7 @@ public class AdminWebController {
         model.addAttribute("totalStudents", totalStudents);
         model.addAttribute("totalFaculty", totalFaculty);
         model.addAttribute("pendingFaculty", pendingFaculty);
+        model.addAttribute("pendingStudents", pendingStudents);
         model.addAttribute("totalLibrarians", totalLibrarians);
 
         return "admin/dashboard";
