@@ -1,10 +1,10 @@
 package com.campusconnect.backend.controller;
 
+import com.campusconnect.backend.dto.PendingStudentResponse;
 import com.campusconnect.backend.entity.User;
 import com.campusconnect.backend.repository.UserRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import com.campusconnect.backend.dto.PendingStudentResponse;
 
 import java.util.List;
 
@@ -17,10 +17,6 @@ public class ApprovalController {
     public ApprovalController(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
-
-    // ==============================
-    // PENDING STUDENTS
-    // ==============================
 
     @GetMapping("/pending-students")
     public ResponseEntity<?> getPendingStudents() {
@@ -36,6 +32,8 @@ public class ApprovalController {
                                 user.getUserId(),
                                 user.getUsername(),
                                 user.getEmail(),
+                                user.getFullName(),
+                                user.getRollNo(),
                                 user.getRole().name(),
                                 user.getStatus().name()
                         ))
@@ -43,10 +41,6 @@ public class ApprovalController {
 
         return ResponseEntity.ok(students);
     }
-
-    // ==============================
-    // STUDENT LIST
-    // ==============================
 
     @GetMapping("/student-list")
     public ResponseEntity<?> getStudentList() {
@@ -61,6 +55,8 @@ public class ApprovalController {
                                 user.getUserId(),
                                 user.getUsername(),
                                 user.getEmail(),
+                                user.getFullName(),
+                                user.getRollNo(),
                                 user.getRole().name(),
                                 user.getStatus().name()
                         ))
@@ -69,21 +65,15 @@ public class ApprovalController {
         return ResponseEntity.ok(students);
     }
 
-    // ==============================
-    // APPROVE STUDENT
-    // ==============================
-
     @PutMapping("/approve-student/{userId}")
     public ResponseEntity<?> approveStudent(
             @PathVariable Long userId) {
 
-        User user = userRepository.findById(userId)
-                .orElse(null);
+        User user =
+                userRepository.findById(userId).orElse(null);
 
         if (user == null) {
-            return ResponseEntity
-                    .notFound()
-                    .build();
+            return ResponseEntity.notFound().build();
         }
 
         if (user.getRole() != User.Role.STUDENT) {
@@ -100,21 +90,15 @@ public class ApprovalController {
         return ResponseEntity.ok(updatedUser);
     }
 
-    // ==============================
-    // REJECT STUDENT
-    // ==============================
-
     @PutMapping("/reject-student/{userId}")
     public ResponseEntity<?> rejectStudent(
             @PathVariable Long userId) {
 
-        User user = userRepository.findById(userId)
-                .orElse(null);
+        User user =
+                userRepository.findById(userId).orElse(null);
 
         if (user == null) {
-            return ResponseEntity
-                    .notFound()
-                    .build();
+            return ResponseEntity.notFound().build();
         }
 
         if (user.getRole() != User.Role.STUDENT) {
