@@ -78,6 +78,16 @@
             color: #777;
             font-size: 13px;
         }
+
+        .error {
+            background: #fee2e2;
+            color: #b91c1c;
+            padding: 10px;
+            border-radius: 6px;
+            margin-bottom: 15px;
+            text-align: center;
+            font-size: 14px;
+        }
     </style>
 </head>
 
@@ -91,7 +101,9 @@
         Campus Connect Administration
     </div>
 
-    <form>
+    <div class="error" th:if="${error}" th:text="${error}"></div>
+
+    <form action="/admin/login" method="post">
 
         <label>Username</label>
 

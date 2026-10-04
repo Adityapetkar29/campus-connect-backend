@@ -2,6 +2,7 @@ package com.campusconnect.backend.controller;
 
 import com.campusconnect.backend.entity.User;
 import com.campusconnect.backend.repository.UserRepository;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -10,18 +11,88 @@ import org.springframework.web.bind.annotation.*;
 public class AdminWebController {
 
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public AdminWebController(UserRepository userRepository) {
+    public AdminWebController(
+            UserRepository userRepository,
+            PasswordEncoder passwordEncoder) {
+
         this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     // =========================
-    // ADMIN LOGIN
+    // ADMIN LOGIN PAGE
     // =========================
 
     @GetMapping("/admin/login")
     public String adminLogin() {
         return "admin/login";
+    }
+
+    // =========================
+    // ADMIN LOGIN PROCESS
+    // =========================
+
+    @PostMapping("/admin/login")
+    public String adminLoginProcess(
+            @RequestParam String username,
+            @RequestParam String password,
+            Model model) {
+
+        User user = userRepository
+                .findByUsername(username)
+                .orElse(null);
+
+        if (user == null) {
+            model.addAttribute(
+                    "error",
+                    "Invalid username or password"
+            );
+
+            return "admin/login";
+        }
+
+        if (user.getRole() != User.Role.ADMIN) {
+            model.addAttribute(
+                    "error",
+                    "Access denied. Admin account required."
+            );
+
+            return "admin/login";
+        }
+
+        if (!passwordEncoder.matches(
+                password,
+                user.getPasswordHash())) {
+
+            model.addAttribute(
+                    "error",
+                    "Invalid username or password"
+            );
+
+            return "admin/login";
+        }
+
+        if (user.getStatus() != User.Status.APPROVED) {
+            model.addAttribute(
+                    "error",
+                    "Admin account is not approved"
+            );
+
+            return "admin/login";
+        }
+
+        if (!user.getActive()) {
+            model.addAttribute(
+                    "error",
+                    "Admin account is inactive"
+            );
+
+            return "admin/login";
+        }
+
+        return "redirect:/admin";
     }
 
     // =========================
@@ -44,11 +115,15 @@ public class AdminWebController {
         model.addAttribute("recentUsers", recentUsers);
 
         long totalStudents = users.stream()
-                .filter(user -> user.getRole() == User.Role.STUDENT)
+                .filter(user ->
+                        user.getRole() == User.Role.STUDENT
+                )
                 .count();
 
         long totalFaculty = users.stream()
-                .filter(user -> user.getRole() == User.Role.FACULTY)
+                .filter(user ->
+                        user.getRole() == User.Role.FACULTY
+                )
                 .count();
 
         long pendingFaculty = users.stream()
@@ -66,7 +141,9 @@ public class AdminWebController {
                 .count();
 
         long totalLibrarians = users.stream()
-                .filter(user -> user.getRole() == User.Role.LIBRARIAN)
+                .filter(user ->
+                        user.getRole() == User.Role.LIBRARIAN
+                )
                 .count();
 
         model.addAttribute("totalStudents", totalStudents);
@@ -219,7 +296,6 @@ public class AdminWebController {
 
         var users = userRepository.findAll();
 
-        // Search
         if (search != null && !search.trim().isEmpty()) {
 
             String keyword = search.trim().toLowerCase();
@@ -232,7 +308,6 @@ public class AdminWebController {
                     .toList();
         }
 
-        // Role filter
         if (role != null && !role.isEmpty()) {
 
             users = users.stream()
@@ -242,7 +317,6 @@ public class AdminWebController {
                     .toList();
         }
 
-        // Status filter
         if (status != null && !status.isEmpty()) {
 
             users = users.stream()
@@ -252,7 +326,6 @@ public class AdminWebController {
                     .toList();
         }
 
-        // Active / inactive filter
         if (active != null && !active.isEmpty()) {
 
             boolean isActive = Boolean.parseBoolean(active);
