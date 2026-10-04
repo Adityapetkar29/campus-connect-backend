@@ -19,8 +19,6 @@
             color: #1e293b;
         }
 
-        /* Header */
-
         .header {
             background: linear-gradient(135deg, #111827, #1e3a8a);
             color: white;
@@ -43,8 +41,6 @@
             opacity: 0.85;
         }
 
-        /* Container */
-
         .container {
             max-width: 1150px;
             margin: 35px auto;
@@ -64,8 +60,6 @@
             color: #64748b;
             margin-top: 6px;
         }
-
-        /* Stats */
 
         .stats {
             display: grid;
@@ -99,14 +93,10 @@
             font-size: 14px;
         }
 
-        /* Section Title */
-
         .section-title {
             font-size: 21px;
             margin: 30px 0 15px;
         }
-
-        /* Quick Actions */
 
         .actions {
             display: grid;
@@ -145,8 +135,6 @@
             color: #64748b;
             font-size: 14px;
         }
-
-        /* Recent Users */
 
         .recent-box {
             background: white;
@@ -194,8 +182,6 @@
             color: #64748b;
         }
 
-        /* Role Badge */
-
         .role-badge {
             display: inline-block;
             padding: 5px 9px;
@@ -224,8 +210,6 @@
             color: #b91c1c;
         }
 
-        /* Account Badge */
-
         .account-badge {
             display: inline-block;
             padding: 5px 9px;
@@ -244,8 +228,6 @@
             color: #dc2626;
         }
 
-        /* View All */
-
         .view-all {
             display: inline-block;
             margin-top: 15px;
@@ -262,15 +244,11 @@
             background: #2563eb;
         }
 
-        /* Empty Recent Users */
-
         .recent-empty {
             text-align: center;
             padding: 35px 20px;
             color: #64748b;
         }
-
-        /* Logout */
 
         .bottom {
             margin-top: 30px;
@@ -290,17 +268,13 @@
             background: #b91c1c;
         }
 
-        /* Responsive */
-
         @media (max-width: 1100px) {
-
             .stats {
                 grid-template-columns: repeat(3, 1fr);
             }
         }
 
         @media (max-width: 900px) {
-
             .stats {
                 grid-template-columns: repeat(2, 1fr);
             }
@@ -311,7 +285,6 @@
         }
 
         @media (max-width: 600px) {
-
             .header {
                 padding: 22px;
             }
@@ -339,8 +312,6 @@
 
 <body>
 
-<!-- Header -->
-
 <div class="header">
 
     <div class="header-content">
@@ -355,12 +326,7 @@
 
 </div>
 
-
-<!-- Main -->
-
 <div class="container">
-
-    <!-- Welcome -->
 
     <div class="welcome">
 
@@ -372,12 +338,7 @@
 
     </div>
 
-
-    <!-- Statistics -->
-
     <div class="stats">
-
-        <!-- Students -->
 
         <div class="stat-card">
 
@@ -395,9 +356,6 @@
 
         </div>
 
-
-        <!-- Faculty -->
-
         <div class="stat-card">
 
             <div class="stat-icon">
@@ -413,9 +371,6 @@
             </p>
 
         </div>
-
-
-        <!-- Pending Students -->
 
         <div class="stat-card">
 
@@ -433,9 +388,6 @@
 
         </div>
 
-
-        <!-- Pending Faculty -->
-
         <div class="stat-card">
 
             <div class="stat-icon">
@@ -451,9 +403,6 @@
             </p>
 
         </div>
-
-
-        <!-- Librarians -->
 
         <div class="stat-card">
 
@@ -472,9 +421,6 @@
         </div>
 
     </div>
-
-
-    <!-- Quick Actions -->
 
     <h2 class="section-title">
         Quick Actions
@@ -499,7 +445,6 @@
 
         </a>
 
-
         <a href="/admin/users"
            class="action-card">
 
@@ -517,8 +462,9 @@
 
         </a>
 
+        <!-- LIBRARY MANAGEMENT -->
 
-        <a href="/library"
+        <a href="/library/login"
            class="action-card">
 
             <div class="action-icon">
@@ -530,23 +476,18 @@
             </h3>
 
             <p>
-                Manage books, issues, returns and overdue books.
+                Login to Library Management System.
             </p>
 
         </a>
 
     </div>
 
-
-    <!-- Recent Users -->
-
     <h2 class="section-title">
         Recent Users
     </h2>
 
     <div class="recent-box">
-
-        <!-- No Users -->
 
         <div th:if="${#lists.isEmpty(recentUsers)}"
              class="recent-empty">
@@ -564,9 +505,6 @@
             </p>
 
         </div>
-
-
-        <!-- Users -->
 
         <table
                 th:if="${!#lists.isEmpty(recentUsers)}"
@@ -600,7 +538,6 @@
 
             </thead>
 
-
             <tbody>
 
             <tr th:each="user : ${recentUsers}">
@@ -608,7 +545,6 @@
                 <td th:text="${user.userId}">
                     1
                 </td>
-
 
                 <td>
 
@@ -620,7 +556,6 @@
 
                 </td>
 
-
                 <td>
 
                     <span
@@ -630,7 +565,6 @@
                     </span>
 
                 </td>
-
 
                 <td>
 
@@ -660,7 +594,6 @@
 
                 </td>
 
-
                 <td>
 
                     <span
@@ -685,18 +618,12 @@
 
     </div>
 
-
-    <!-- View All Users -->
-
     <a href="/admin/users"
        class="view-all">
 
         View All Users →
 
     </a>
-
-
-    <!-- Bottom -->
 
     <div class="bottom">
 
