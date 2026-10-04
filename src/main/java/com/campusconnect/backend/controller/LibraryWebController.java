@@ -27,7 +27,7 @@ public class LibraryWebController {
 
     @GetMapping("/library/login")
     public String libraryLogin() {
-        return "library/books/login";
+        return "library/login";
     }
 
     @GetMapping("/library")

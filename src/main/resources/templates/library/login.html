@@ -99,16 +99,22 @@
     <form id="loginForm">
 
         <label>Username</label>
-        <input type="text"
-               id="username"
-               placeholder="Enter username"
-               required>
+
+        <input
+                type="text"
+                id="username"
+                placeholder="Enter username"
+                required
+        >
 
         <label>Password</label>
-        <input type="password"
-               id="password"
-               placeholder="Enter password"
-               required>
+
+        <input
+                type="password"
+                id="password"
+                placeholder="Enter password"
+                required
+        >
 
         <button type="submit">
             Login
@@ -119,60 +125,106 @@
     <div id="message"></div>
 
     <div class="note">
-        Library access
+        Authorized library staff only
     </div>
 
 </div>
 
 <script>
-    document.getElementById("loginForm").addEventListener("submit", async function(event) {
 
-        event.preventDefault();
+    document.getElementById("loginForm").addEventListener(
+        "submit",
+        async function(event) {
 
-        const username = document.getElementById("username").value;
-        const password = document.getElementById("password").value;
+            event.preventDefault();
 
-        try {
+            const username =
+                document.getElementById("username").value.trim();
 
-            const response = await fetch("/api/auth/login", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({
-                    username: username,
-                    password: password
-                })
-            });
+            const password =
+                document.getElementById("password").value;
 
-            const data = await response.json();
+            const message =
+                document.getElementById("message");
 
-            if (!response.ok) {
-                document.getElementById("message").textContent =
-                    data.message || "Login failed";
-                return;
+            message.textContent = "";
+
+            try {
+
+                const response = await fetch("/api/auth/login", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        username: username,
+                        password: password
+                    })
+                });
+
+                const text = await response.text();
+
+                let data = {};
+
+                try {
+                    data = JSON.parse(text);
+                } catch (e) {
+                    data = {
+                        message: text
+                    };
+                }
+
+                if (!response.ok) {
+
+                    message.textContent =
+                        data.message || "Login failed";
+
+                    return;
+                }
+
+                if (data.role !== "LIBRARIAN") {
+
+                    message.textContent =
+                        "Only librarian can access this page.";
+
+                    return;
+                }
+
+                localStorage.setItem(
+                    "token",
+                    data.token
+                );
+
+                localStorage.setItem(
+                    "username",
+                    data.username
+                );
+
+                localStorage.setItem(
+                    "role",
+                    data.role
+                );
+
+                /*
+                 * IMPORTANT:
+                 * LibraryWebController has:
+                 * @GetMapping("/library")
+                 *
+                 * Therefore redirect to /library
+                 */
+
+                window.location.href = "/library";
+
+            } catch (error) {
+
+                message.textContent =
+                    "Server error. Please try again.";
+
+                console.error(error);
             }
-
-            if (data.role !== "LIBRARIAN") {
-                document.getElementById("message").textContent =
-                    "Only librarian can access this page.";
-                return;
-            }
-
-            localStorage.setItem("token", data.token);
-            localStorage.setItem("username", data.username);
-            localStorage.setItem("role", data.role);
-
-            window.location.href = "/library/dashboard";
-
-        } catch (error) {
-
-            document.getElementById("message").textContent =
-                "Server error. Please try again.";
-
-            console.error(error);
         }
-    });
+    );
+
 </script>
 
 </body>
