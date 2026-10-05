@@ -142,14 +142,18 @@ public class LibraryWebController {
     public String returnBook(@PathVariable Long id) {
 
         IssuedBook issuedBook = issuedBookRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Issued book not found"));
+                .orElseThrow(() ->
+                        new RuntimeException("Issued book not found"));
 
         if (issuedBook.getReturnDate() == null) {
 
             issuedBook.setReturnDate(LocalDate.now());
 
             Book book = issuedBook.getBook();
-            book.setAvailableCopies(book.getAvailableCopies() + 1);
+
+            book.setAvailableCopies(
+                    book.getAvailableCopies() + 1
+            );
 
             bookRepository.save(book);
             issuedBookRepository.save(issuedBook);
@@ -159,14 +163,13 @@ public class LibraryWebController {
     }
 
     // DELETE BOOK
-    // DELETE BOOK
-    // DELETE BOOK
     @Transactional
     @PostMapping("/library/books/delete/{id}")
     public String deleteBook(@PathVariable Long id) {
 
         Book book = bookRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Book not found"));
+                .orElseThrow(() ->
+                        new RuntimeException("Book not found"));
 
         // Check if book is currently issued
         boolean currentlyIssued = issuedBookRepository.findAll()
@@ -196,6 +199,28 @@ public class LibraryWebController {
 
         return "redirect:/library/books";
     }
+
+    // DELETE INDIVIDUAL ISSUED BOOK HISTORY
+    @Transactional
+    @PostMapping("/library/issued/delete/{id}")
+    public String deleteIssuedBookHistory(
+            @PathVariable Long id) {
+
+        IssuedBook issuedBook = issuedBookRepository.findById(id)
+                .orElseThrow(() ->
+                        new RuntimeException("Issued book history not found"));
+
+        // Only delete returned/history records.
+        // Currently issued books cannot be deleted from history.
+        if (issuedBook.getReturnDate() == null) {
+            return "redirect:/library/issued?error=active";
+        }
+
+        issuedBookRepository.delete(issuedBook);
+
+        return "redirect:/library/issued?deleted=true";
+    }
+
     // OVERDUE BOOKS
     @GetMapping("/library/overdue")
     public String overdueBooks(Model model) {
@@ -205,7 +230,9 @@ public class LibraryWebController {
         var overdueBooks = issuedBookRepository.findAll().stream()
                 .filter(issued -> issued.getReturnDate() == null)
                 .filter(issued -> issued.getDueDate() != null)
-                .filter(issued -> issued.getDueDate().isBefore(today))
+                .filter(issued ->
+                        issued.getDueDate().isBefore(today)
+                )
                 .toList();
 
         model.addAttribute("overdueBooks", overdueBooks);

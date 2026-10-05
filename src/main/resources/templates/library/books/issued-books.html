@@ -19,7 +19,6 @@
             color: #1e293b;
         }
 
-        /* Header */
         .header {
             background: linear-gradient(135deg, #1e3a8a, #2563eb);
             color: white;
@@ -42,7 +41,6 @@
             opacity: 0.9;
         }
 
-        /* Main */
         .container {
             max-width: 1100px;
             margin: 35px auto;
@@ -70,7 +68,6 @@
             font-weight: bold;
         }
 
-        /* Book Card */
         .card {
             background: white;
             padding: 25px;
@@ -116,7 +113,6 @@
             margin-top: 4px;
         }
 
-        /* Details */
         .details {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -144,7 +140,6 @@
             font-size: 15px;
         }
 
-        /* Status */
         .status {
             display: inline-block;
             padding: 7px 12px;
@@ -169,11 +164,11 @@
             color: #dc2626;
         }
 
-        /* Buttons */
         .actions {
             display: flex;
             gap: 10px;
             margin-top: 10px;
+            flex-wrap: wrap;
         }
 
         .btn {
@@ -197,6 +192,15 @@
             background: #15803d;
         }
 
+        .delete-history-btn {
+            background: #dc2626;
+            color: white;
+        }
+
+        .delete-history-btn:hover {
+            background: #b91c1c;
+        }
+
         .back-btn {
             background: #1e3a8a;
             color: white;
@@ -206,7 +210,6 @@
             background: #1d4ed8;
         }
 
-        /* Empty */
         .empty {
             text-align: center;
             padding: 55px 20px;
@@ -228,7 +231,25 @@
             color: #64748b;
         }
 
-        /* Responsive */
+        .message {
+            padding: 14px 18px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        .success-message {
+            background: #dcfce7;
+            color: #15803d;
+            border: 1px solid #bbf7d0;
+        }
+
+        .error-message {
+            background: #fee2e2;
+            color: #b91c1c;
+            border: 1px solid #fecaca;
+        }
+
         @media (max-width: 700px) {
 
             .header {
@@ -272,6 +293,23 @@
               th:text="${#lists.size(issuedBooks) + ' Books'}">
             0 Books
         </span>
+    </div>
+
+    <!-- Success Message -->
+    <div th:if="${param.deleted}"
+         class="message success-message">
+
+        ✅ Issued book history deleted successfully.
+
+    </div>
+
+    <!-- Error Message -->
+    <div th:if="${param.error == 'active'}"
+         class="message error-message">
+
+        ⚠️ Currently issued books cannot be deleted.
+        Please return the book first.
+
     </div>
 
     <!-- No books -->
@@ -397,7 +435,7 @@
 
         </div>
 
-        <!-- Return button -->
+        <!-- Currently Issued: Return Button -->
         <div class="actions"
              th:if="${issued.returnDate == null}">
 
@@ -416,6 +454,26 @@
 
         </div>
 
+        <!-- Returned: Delete History Button -->
+        <div class="actions"
+             th:if="${issued.returnDate != null}">
+
+            <form
+                    th:action="@{'/library/issued/delete/' + ${issued.id}}"
+                    method="post"
+                    onsubmit="return confirmDelete();">
+
+                <button type="submit"
+                        class="btn delete-history-btn">
+
+                    🗑 Delete History
+
+                </button>
+
+            </form>
+
+        </div>
+
     </div>
 
     <!-- Back -->
@@ -427,6 +485,18 @@
     </a>
 
 </div>
+
+<script>
+
+    function confirmDelete() {
+
+        return confirm(
+            "Are you sure you want to permanently delete this returned book history?"
+        );
+
+    }
+
+</script>
 
 </body>
 </html>
