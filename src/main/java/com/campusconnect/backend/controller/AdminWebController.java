@@ -2,6 +2,7 @@ package com.campusconnect.backend.controller;
 
 import com.campusconnect.backend.entity.User;
 import com.campusconnect.backend.repository.UserRepository;
+import com.campusconnect.backend.repository.IssuedBookRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -12,13 +13,16 @@ public class AdminWebController {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final IssuedBookRepository issuedBookRepository;
 
     public AdminWebController(
             UserRepository userRepository,
-            PasswordEncoder passwordEncoder) {
+            PasswordEncoder passwordEncoder,
+            IssuedBookRepository issuedBookRepository) {
 
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.issuedBookRepository = issuedBookRepository;
     }
 
     // =========================
@@ -518,6 +522,18 @@ public class AdminWebController {
             return "redirect:/admin/users?error=admin-delete";
         }
 
+        // Delete student's issued-book history first
+        // because issued_books contains records linked
+        // with the student's username.
+        if (user.getRole() == User.Role.STUDENT) {
+
+            issuedBookRepository
+                    .deleteByStudentNameIgnoreCase(
+                            user.getUsername()
+                    );
+        }
+
+        // Delete the user account
         userRepository.delete(user);
 
         return "redirect:/admin/users";
